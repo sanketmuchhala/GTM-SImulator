@@ -1,200 +1,199 @@
-<div align="center">
+# Jeeva GTM Simulation Lab
 
-<img src="./static/image/MiroFish_logo_compressed.jpeg" alt="MiroFish Logo" width="75%"/>
+> **Simulate your GTM before launching outreach.**
 
-<a href="https://trendshift.io/repositories/16144" target="_blank"><img src="https://trendshift.io/api/badge/repositories/16144" alt="666ghj%2FMiroFish | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+A Jeeva-inspired, open-source GTM simulation engine for B2B founders and GTM teams.
+Enter your product brief, ICP, and messaging. Get back AI-generated buyer personas,
+message reaction simulations, ranked objections, and a recommended 7-day outbound experiment —
+before sending a single real email.
 
-<em>A Simple and Universal Swarm Intelligence Engine, Predicting Anything</em>
+> **Note:** This is a Jeeva-inspired research project, not an official Jeeva product.
+> It is not affiliated with, endorsed by, or built by Jeeva Inc.
 
-<a href="https://www.shanda.com/" target="_blank"><img src="./static/image/shanda_logo.png" alt="666ghj%2MiroFish | Shanda" height="40"/></a>
+---
 
-[![GitHub Stars](https://img.shields.io/github/stars/666ghj/MiroFish?style=flat-square&color=DAA520)](https://github.com/666ghj/MiroFish/stargazers)
-[![GitHub Watchers](https://img.shields.io/github/watchers/666ghj/MiroFish?style=flat-square)](https://github.com/666ghj/MiroFish/watchers)
-[![GitHub Forks](https://img.shields.io/github/forks/666ghj/MiroFish?style=flat-square)](https://github.com/666ghj/MiroFish/network)
-[![Docker](https://img.shields.io/badge/Docker-Build-2496ED?style=flat-square&logo=docker&logoColor=white)](https://hub.docker.com/)
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/666ghj/MiroFish)
+## What It Does
 
-[![Discord](https://img.shields.io/badge/Discord-Join-5865F2?style=flat-square&logo=discord&logoColor=white)](http://discord.gg/ePf5aPaHnA)
-[![X](https://img.shields.io/badge/X-Follow-000000?style=flat-square&logo=x&logoColor=white)](https://x.com/mirofish_ai)
-[![Instagram](https://img.shields.io/badge/Instagram-Follow-E4405F?style=flat-square&logo=instagram&logoColor=white)](https://www.instagram.com/mirofish_ai/)
+Most GTM failures happen because founders never tested their assumptions before spending weeks on outreach.
+This tool simulates what happens when your message hits your ICP — at zero cost, before you launch.
 
+1. **Input Brief** — Describe your product, ICP, pricing, target market, and pain point
+2. **Persona Generation** — AI generates 12 buyer persona types based on your ICP
+3. **Message Testing** — 3 outreach angle variants (pain-led, ROI-led, social-proof-led) tested against each persona
+4. **Buyer Reactions** — Each persona responds: interested / neutral / objection + likely reply text
+5. **GTM Report** — Aggregated analysis: best message angle, top objections with rebuttals, segment readiness scores, 7-day outbound experiment plan
 
-</div>
+---
 
-## ⚡ Overview
+## Core Features
 
-**MiroFish** is a next-generation AI prediction engine powered by multi-agent technology. By extracting seed information from the real world (such as breaking news, policy drafts, or financial signals), it automatically constructs a high-fidelity parallel digital world. Within this space, thousands of intelligent agents with independent personalities, long-term memory, and behavioral logic freely interact and undergo social evolution. You can inject variables dynamically from a "God's-eye view" to precisely deduce future trajectories — **rehearse the future in a digital sandbox, and win decisions after countless simulations**.
+- **AI-generated buyer personas** — 12 archetypes from Skeptical VP Sales to Enthusiastic Founder-Seller
+- **Outreach message testing** — 3 message angle variants, each scored against every persona
+- **Objection simulation** — Surface the exact objections before your SDRs hear them live
+- **GTM recommendation engine** — ReACT-pattern agentic analysis with reflection loops
+- **Outbound experiment planner** — Concrete 7-day first-outbound plan with success metrics
+- **Downloadable report** — Full GTM analysis exported as Markdown
+- **Mock mode** — Runs fully without API keys for demos (`MOCK_MODE=true`)
 
-> You only need to: Upload seed materials (data analysis reports or interesting novel stories) and describe your prediction requirements in natural language</br>
-> MiroFish will return: A detailed prediction report and a deeply interactive high-fidelity digital world
+---
 
-### Our Vision
+## How It Works
 
-MiroFish is dedicated to creating a swarm intelligence mirror that maps reality. By capturing the collective emergence triggered by individual interactions, we break through the limitations of traditional prediction:
-
-- **At the Macro Level**: We are a rehearsal laboratory for decision-makers, allowing policies and public relations to be tested at zero risk
-- **At the Micro Level**: We are a creative sandbox for individual users — whether deducing novel endings or exploring imaginative scenarios, everything can be fun, playful, and accessible
-
-From serious predictions to playful simulations, we let every "what if" see its outcome, making it possible to predict anything.
-
-## 🌐 Live Demo
-
-Welcome to visit our online demo environment and experience a prediction simulation on trending public opinion events we've prepared for you: [mirofish-live-demo](https://666ghj.github.io/mirofish-demo/)
-
-## 📸 Screenshots
-
-<div align="center">
-<table>
-<tr>
-<td><img src="./static/image/Screenshot/screenshot-1.png" alt="Screenshot 1" width="100%"/></td>
-<td><img src="./static/image/Screenshot/screenshot-2.png" alt="Screenshot 2" width="100%"/></td>
-</tr>
-<tr>
-<td><img src="./static/image/Screenshot/screenshot-3.png" alt="Screenshot 3" width="100%"/></td>
-<td><img src="./static/image/Screenshot/screenshot-4.png" alt="Screenshot 4" width="100%"/></td>
-</tr>
-<tr>
-<td><img src="./static/image/Screenshot/screenshot-5.png" alt="Screenshot 5" width="100%"/></td>
-<td><img src="./static/image/Screenshot/screenshot-6.png" alt="Screenshot 6" width="100%"/></td>
-</tr>
-</table>
-</div>
-
-## 🎬 Demo Videos
-
-### 1. Wuhan University Public Opinion Simulation + MiroFish Project Introduction
-
-<div align="center">
-<a href="https://www.bilibili.com/video/BV1VYBsBHEMY/" target="_blank"><img src="./static/image/wuhan-university-demo-cover.png" alt="MiroFish Demo Video" width="75%"/></a>
-
-Click the image to watch the complete demo video for prediction using BettaFish-generated "Wuhan University Public Opinion Report"
-</div>
-
-### 2. Dream of the Red Chamber Lost Ending Simulation
-
-<div align="center">
-<a href="https://www.bilibili.com/video/BV1cPk3BBExq" target="_blank"><img src="./static/image/dream-of-red-chamber-demo-cover.jpg" alt="MiroFish Demo Video" width="75%"/></a>
-
-Click the image to watch MiroFish's deep prediction of the lost ending based on hundreds of thousands of words from the first 80 chapters of "Dream of the Red Chamber"
-</div>
-
-> **Financial Prediction**, **Political News Prediction** and more examples coming soon...
-
-## 🔄 Workflow
-
-1. **Graph Building**: Seed extraction & Individual/collective memory injection & GraphRAG construction
-2. **Environment Setup**: Entity relationship extraction & Persona generation & Agent configuration injection
-3. **Simulation**: Dual-platform parallel simulation & Auto-parse prediction requirements & Dynamic temporal memory updates
-4. **Report Generation**: ReportAgent with rich toolset for deep interaction with post-simulation environment
-5. **Deep Interaction**: Chat with any agent in the simulated world & Interact with ReportAgent
-
-## 🚀 Quick Start
-
-### Option 1: Source Code Deployment (Recommended)
-
-#### Prerequisites
-
-| Tool | Version | Description | Check Installation |
-|------|---------|-------------|-------------------|
-| **Node.js** | 18+ | Frontend runtime, includes npm | `node -v` |
-| **Python** | ≥3.11, ≤3.12 | Backend runtime | `python --version` |
-| **uv** | Latest | Python package manager | `uv --version` |
-
-#### 1. Configure Environment Variables
-
-```bash
-# Copy the example configuration file
-cp .env.example .env
-
-# Edit the .env file and fill in the required API keys
+```
+Input Brief (8 fields)
+    ↓
+Persona Generator       → 12 buyer personas with pain points, skepticism, channels
+    ↓
+Message Generator       → 3 outreach angle variants per your brief
+    ↓
+Buyer Reaction Sim      → LLM simulates reaction per persona × message angle
+    ↓
+GTM Analyst             → Aggregates results, ranks objections, scores segments
+    ↓
+Report UI + Download    → Full GTM report with 7-day experiment recommendation
 ```
 
-**Required Environment Variables:**
+---
+
+## Architecture Overview
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | Vue 3 SPA + Vue Router + Pinia + Vue i18n |
+| Backend | Flask (Python 3.11+) |
+| LLM | OpenAI-compatible API (configurable — works with any provider) |
+| Memory / Graph | Zep Cloud SDK (knowledge graph for persona context) |
+| Simulation Engine | OASIS framework (multi-agent social simulation — used for future deep simulation phases) |
+| Report Generation | ReACT-pattern agentic loop with tool-use and reflection |
+| Persistence | File-system based — no database required |
+
+---
+
+## MVP Scope
+
+This is intentionally a lightweight simulation demo, not a production outreach tool.
+
+**What it is:**
+- A fast way to stress-test GTM assumptions before writing a single email
+- A structured way to surface likely buyer objections early
+- A demo-able prototype for founder pitches, investor presentations, or GTM kickoffs
+
+**What it is not:**
+- A replacement for real customer interviews
+- A CRM or outreach sequencer
+- A guarantee of real-world reply rates
+
+Treat the output as a structured first hypothesis, not a prediction.
+
+---
+
+## Example Use Cases
+
+- **ICP validation** — Does my ICP description actually produce consistent, realistic buyer personas?
+- **Messaging triage** — Which of my 3 message angles is most likely to land?
+- **Objection discovery** — What objections will I hear before I hear them?
+- **Segment prioritization** — Which buyer segment has the highest readiness score right now?
+- **Outbound experiment design** — What should my first 7-day outreach test look like?
+
+---
+
+## Tech Stack
+
+| Component | Stack |
+|-----------|-------|
+| Frontend | Vue 3, Vue Router, Pinia, Vue i18n, Vite |
+| Backend | Python 3.11+, Flask 3.x, flask-cors |
+| LLM Client | OpenAI SDK (compatible with any OpenAI-format provider) |
+| Memory | Zep Cloud SDK |
+| Simulation | OASIS (camel-oasis, camel-ai) |
+| File Parsing | PyMuPDF, charset-normalizer |
+| Package Manager | uv (Python), npm (Node) |
+
+---
+
+## Running Locally
+
+### Prerequisites
+
+| Tool | Version |
+|------|---------|
+| Node.js | 18+ |
+| Python | 3.11–3.12 |
+| uv | latest |
+
+### 1. Configure environment
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` and fill in:
 
 ```env
-# LLM API Configuration (supports any LLM API with OpenAI SDK format)
-# Recommended: Alibaba Qwen-plus model via Bailian Platform: https://bailian.console.aliyun.com/
-# High consumption, try simulations with fewer than 40 rounds first
+# Required: any OpenAI-compatible LLM API
 LLM_API_KEY=your_api_key
-LLM_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
-LLM_MODEL_NAME=qwen-plus
+LLM_BASE_URL=https://api.openai.com/v1
+LLM_MODEL_NAME=gpt-4o-mini
 
-# Zep Cloud Configuration
-# Free monthly quota is sufficient for simple usage: https://app.getzep.com/
+# Required: Zep Cloud (free tier sufficient)
+# https://app.getzep.com/
 ZEP_API_KEY=your_zep_api_key
+
+# Optional: run in mock mode (no API keys needed)
+# MOCK_MODE=true
 ```
 
-#### 2. Install Dependencies
+### 2. Install dependencies
 
 ```bash
-# One-click installation of all dependencies (root + frontend + backend)
 npm run setup:all
 ```
 
-Or install step by step:
+### 3. Start
 
 ```bash
-# Install Node dependencies (root + frontend)
-npm run setup
-
-# Install Python dependencies (backend, auto-creates virtual environment)
-npm run setup:backend
-```
-
-#### 3. Start Services
-
-```bash
-# Start both frontend and backend (run from project root)
 npm run dev
 ```
 
-**Service URLs:**
 - Frontend: `http://localhost:3000`
 - Backend API: `http://localhost:5001`
 
-**Start Individually:**
+### Mock mode (no API keys needed)
 
 ```bash
-npm run backend   # Start backend only
-npm run frontend  # Start frontend only
+MOCK_MODE=true npm run dev
 ```
 
-### Option 2: Docker Deployment
+All simulation endpoints return pre-built realistic mock data. Full demo flow works without any API keys.
+
+### Docker
 
 ```bash
-# 1. Configure environment variables (same as source deployment)
 cp .env.example .env
-
-# 2. Pull image and start
 docker compose up -d
 ```
 
-Reads `.env` from root directory by default, maps ports `3000 (frontend) / 5001 (backend)`
+---
 
-> Mirror address for faster pulling is provided as comments in `docker-compose.yml`, replace if needed.
+## Roadmap
 
-## 📬 Join the Conversation
+- [ ] Richer persona memory (multi-round conversation history per persona)
+- [ ] Multi-round message refinement (iterate on message based on objections)
+- [ ] CRM integrations (export personas + experiment plan to HubSpot / Salesforce)
+- [ ] Real outbound feedback loops (compare simulated vs. actual reply rates)
+- [ ] Agentic workflow automation (autonomous multi-step GTM planning)
+- [ ] Custom persona library (upload your own ICP research)
+- [ ] Team collaboration (shared briefs and reports)
 
-<div align="center">
-<img src="./static/image/qq-group.png" alt="QQ Group" width="60%"/>
-</div>
+---
 
-&nbsp;
+## Acknowledgments
 
-The MiroFish team is recruiting full-time/internship positions. If you're interested in multi-agent simulation and LLM applications, feel free to send your resume to: **mirofish@shanda.com**
+Built on top of the [MiroFish](https://github.com/666ghj/MiroFish) open-source swarm intelligence engine.
+The simulation infrastructure is powered by [OASIS](https://github.com/camel-ai/oasis) from the CAMEL-AI team.
 
-## 📄 Acknowledgments
+---
 
-**MiroFish has received strategic support and incubation from Shanda Group!**
+## License
 
-MiroFish's simulation engine is powered by **[OASIS (Open Agent Social Interaction Simulations)](https://github.com/camel-ai/oasis)**, We sincerely thank the CAMEL-AI team for their open-source contributions!
-
-## 📈 Project Statistics
-
-<a href="https://www.star-history.com/#666ghj/MiroFish&type=date&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=666ghj/MiroFish&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=666ghj/MiroFish&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=666ghj/MiroFish&type=date&legend=top-left" />
- </picture>
-</a>
+AGPL-3.0
