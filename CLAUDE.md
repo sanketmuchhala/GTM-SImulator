@@ -56,7 +56,8 @@ After completing each phase:
 3. Commit with the format below
 4. Stop and wait for the next phase instruction
 
-**Current phase: Phase 0 (documentation only — complete)**
+**Last completed phase: Phase 1 (rebrand + copy cleanup)**
+**Current phase: Phase 2 (GTM input form) — awaiting instruction**
 
 ---
 
