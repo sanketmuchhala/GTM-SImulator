@@ -141,10 +141,48 @@
       </div>
     </div>
 
-    <!-- Section 04: Optional -->
+    <!-- Section 04: Simulation Parameters -->
+    <div class="form-section params-section">
+      <div class="section-label">04 / Simulation Parameters</div>
+
+      <div class="field-group">
+        <label class="field-label">
+          Buyer Personas
+          <span class="param-count">{{ form.numPersonas }}</span>
+        </label>
+        <input
+          v-model.number="form.numPersonas"
+          type="range"
+          class="field-slider"
+          min="6" max="50" step="1"
+        />
+        <div class="slider-hints">
+          <span>6 — quick test</span>
+          <span>12 — standard</span>
+          <span>30 — deep</span>
+          <span>50 — exhaustive</span>
+        </div>
+        <div class="param-note">
+          More personas = broader signal + higher LLM cost. ~$0.10 per 6 extra personas.
+        </div>
+      </div>
+
+      <div class="field-group" style="margin-top: 4px">
+        <label class="field-label">Message Variants</label>
+        <div class="radio-row">
+          <label v-for="n in [2, 3, 4, 5]" :key="n" class="radio-option" :class="{ active: form.numMessages === n }">
+            <input type="radio" v-model.number="form.numMessages" :value="n" hidden />
+            <span class="radio-label">{{ n }}</span>
+          </label>
+        </div>
+        <div class="param-note">Number of outreach angles to generate and test.</div>
+      </div>
+    </div>
+
+    <!-- Section 05: Optional -->
     <div class="form-section optional-section">
       <div class="section-label">
-        04 / Optional
+        05 / Optional
         <button class="toggle-optional" @click="showOptional = !showOptional" type="button">
           {{ showOptional ? '▲ hide' : '▼ show' }}
         </button>
@@ -218,6 +256,8 @@ const form = reactive({
   gtmGoal: '',
   painPoint: '',
   competitors: '',
+  numPersonas: 12,
+  numMessages: 3,
   companyStage: '',
   teamSize: '',
   existingProblems: '',
@@ -390,6 +430,95 @@ function handleSubmit() {
 .toggle-optional:hover { color: var(--text-primary); }
 
 .optional-fields { margin-top: 6px; }
+
+/* Parameters section */
+.params-section { background: var(--bg-elevated); }
+
+.param-count {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--accent);
+  margin-left: 8px;
+}
+
+.field-slider {
+  width: 100%;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: linear-gradient(to right, var(--accent) 0%, var(--accent) calc((var(--val, 0)) * 1%), var(--border-muted) calc((var(--val, 0)) * 1%), var(--border-muted) 100%);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  margin: 10px 0 6px;
+  border: none;
+  padding: 0;
+}
+
+.field-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 2px solid var(--bg-card);
+  box-shadow: 0 0 6px rgba(59,130,246,0.4);
+}
+
+.field-slider::-moz-range-thumb {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 2px solid var(--bg-card);
+}
+
+.slider-hints {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  margin-bottom: 6px;
+}
+
+.param-note {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+.radio-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.radio-option {
+  flex: 1;
+  border: 1px solid var(--border-muted);
+  border-radius: 6px;
+  padding: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.radio-option.active {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.radio-label {
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+}
+
+.radio-option.active .radio-label { color: var(--accent); }
 
 /* Submit */
 .form-submit { padding: 16px 20px; border-top: 1px solid var(--border-subtle); background: var(--bg-card); }

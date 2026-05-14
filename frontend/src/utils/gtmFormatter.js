@@ -35,6 +35,8 @@ export function formatGTMBrief(formData) {
     team_size: (formData.teamSize ?? '').trim() || null,
     existing_problems: (formData.existingProblems ?? '').trim() || null,
     outreach_strategy: (formData.outreachStrategy ?? '').trim() || null,
+    num_personas: Math.max(6, Math.min(50, parseInt(formData.numPersonas) || 12)),
+    num_messages: Math.max(2, Math.min(5, parseInt(formData.numMessages) || 3)),
   }
 }
 

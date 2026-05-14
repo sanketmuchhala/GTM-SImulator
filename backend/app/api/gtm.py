@@ -11,6 +11,16 @@ from ..utils.logger import get_logger
 
 logger = get_logger('mirofish.api.gtm')
 
+
+def _persona_count(brief: dict) -> int:
+    """Persona count from brief, clamped 6–50."""
+    return max(6, min(50, int(brief.get('num_personas', 12))))
+
+
+def _message_count(brief: dict) -> int:
+    """Message variant count from brief, clamped 2–5."""
+    return max(2, min(5, int(brief.get('num_messages', 3))))
+
 _MOCK_PREVIEW_PATH = os.path.join(
     os.path.dirname(__file__), '../../../../mock_data/gtm_preview.json'
 )
@@ -123,8 +133,8 @@ def generate_personas(brief_id: str):
     try:
         from ..services.gtm_persona_generator import GTMPersonaGenerator
         generator = GTMPersonaGenerator()
-        count = request.get_json(silent=True, force=True) or {}
-        n = int(count.get('count', 12))
+        body = request.get_json(silent=True, force=True) or {}
+        n = int(body.get('count', _persona_count(brief)))
         personas = generator.generate(brief, count=n)
         _save_personas(brief_id, personas)
         logger.info(f"Generated and cached {len(personas)} personas for brief {brief_id}")
@@ -154,7 +164,7 @@ def get_personas(brief_id: str):
     try:
         from ..services.gtm_persona_generator import GTMPersonaGenerator
         generator = GTMPersonaGenerator()
-        personas = generator.generate(brief, count=12)
+        personas = generator.generate(brief, count=_persona_count(brief))
         _save_personas(brief_id, personas)
         return jsonify({'success': True, 'data': personas, 'cached': False})
     except Exception as e:
@@ -220,11 +230,11 @@ def generate_messages(brief_id: str):
         personas = _load_json(_personas_path(brief_id))
         if not personas:
             from ..services.gtm_persona_generator import GTMPersonaGenerator
-            personas = GTMPersonaGenerator().generate(brief, count=12)
+            personas = GTMPersonaGenerator().generate(brief, count=_persona_count(brief))
             _save_json(_personas_path(brief_id), personas)
 
         from ..services.gtm_message_generator import GTMMessageGenerator
-        messages = GTMMessageGenerator().generate(brief, personas)
+        messages = GTMMessageGenerator().generate(brief, personas, count=_message_count(brief))
         _save_json(_messages_path(brief_id), messages)
         logger.info(f"Generated {len(messages)} messages for brief {brief_id}")
         return jsonify({'success': True, 'data': messages, 'cached': False})
@@ -247,7 +257,7 @@ def get_messages(brief_id: str):
     try:
         personas = _load_json(_personas_path(brief_id)) or []
         from ..services.gtm_message_generator import GTMMessageGenerator
-        messages = GTMMessageGenerator().generate(brief, personas)
+        messages = GTMMessageGenerator().generate(brief, personas, count=_message_count(brief))
         _save_json(_messages_path(brief_id), messages)
         return jsonify({'success': True, 'data': messages, 'cached': False})
     except Exception as e:
@@ -278,13 +288,13 @@ def generate_reactions(brief_id: str):
         personas = _load_json(_personas_path(brief_id))
         if not personas:
             from ..services.gtm_persona_generator import GTMPersonaGenerator
-            personas = GTMPersonaGenerator().generate(brief, count=12)
+            personas = GTMPersonaGenerator().generate(brief, count=_persona_count(brief))
             _save_json(_personas_path(brief_id), personas)
 
         messages = _load_json(_messages_path(brief_id))
         if not messages:
             from ..services.gtm_message_generator import GTMMessageGenerator
-            messages = GTMMessageGenerator().generate(brief, personas)
+            messages = GTMMessageGenerator().generate(brief, personas, count=_message_count(brief))
             _save_json(_messages_path(brief_id), messages)
 
         from ..services.gtm_reaction_simulator import GTMReactionSimulator
@@ -350,13 +360,13 @@ def generate_report(brief_id: str):
         personas = _load_json(_personas_path(brief_id))
         if not personas:
             from ..services.gtm_persona_generator import GTMPersonaGenerator
-            personas = GTMPersonaGenerator().generate(brief, count=12)
+            personas = GTMPersonaGenerator().generate(brief, count=_persona_count(brief))
             _save_json(_personas_path(brief_id), personas)
 
         messages = _load_json(_messages_path(brief_id))
         if not messages:
             from ..services.gtm_message_generator import GTMMessageGenerator
-            messages = GTMMessageGenerator().generate(brief, personas)
+            messages = GTMMessageGenerator().generate(brief, personas, count=_message_count(brief))
             _save_json(_messages_path(brief_id), messages)
 
         reactions_data = _load_json(_reactions_path(brief_id))

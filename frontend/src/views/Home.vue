@@ -18,6 +18,9 @@
       <section class="hero-section">
         <div class="hero-orb hero-orb-1"></div>
         <div class="hero-orb hero-orb-2"></div>
+
+        <!-- Left: copy -->
+        <div class="hero-left">
         <div class="hero-eyebrow">
           <span class="hero-badge">AI-Powered GTM Lab</span>
           <span class="hero-version">v0.1 · Open Source</span>
@@ -65,6 +68,16 @@
             <span class="hero-stat-label">End to End</span>
           </div>
         </div>
+        </div><!-- /hero-left -->
+
+        <!-- Right: live agent network visualization -->
+        <div class="hero-right">
+          <div class="hviz-frame">
+            <div class="hviz-frame-label">Live simulation preview</div>
+            <HeroViz />
+          </div>
+        </div>
+
       </section>
 
       <!-- ── Problem ────────────────────────────────────────────── -->
@@ -448,6 +461,7 @@ import { submitGTMBrief, getGTMPreview } from '../api/gtm.js'
 import { setGTMBrief, setSimulationPreview, resetGTMState, getGTMState } from '../store/gtmSimulation.js'
 import { MOCK_GTM_PREVIEW } from '../mock/gtm_preview.js'
 import { DEMO_BRIEF } from '../mock/gtm_demo.js'
+import HeroViz from '../components/HeroViz.vue'
 
 const router = useRouter()
 
@@ -629,8 +643,44 @@ function resetForm() {
 
 /* ── Hero ────────────────────────────────────────────────────── */
 .hero-section {
-  margin-bottom: 64px;
-  max-width: 760px;
+  display: grid;
+  grid-template-columns: 1fr 460px;
+  gap: 40px;
+  align-items: start;
+  margin-bottom: 80px;
+  position: relative;
+  overflow: visible;
+}
+
+.hero-left {
+  max-width: 620px;
+}
+
+.hero-right {
+  position: sticky;
+  top: 80px;
+}
+
+.hviz-frame {
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  overflow: hidden;
+  height: 400px;
+  position: relative;
+  background: var(--bg-surface);
+}
+
+.hviz-frame-label {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  z-index: 10;
+  font-family: var(--font-mono);
 }
 
 .hero-eyebrow {
@@ -1688,10 +1738,6 @@ function resetForm() {
 .scl-demo-link:hover { color: #818cf8; }
 
 /* ── Hero orbs ──────────────────────────────────────────────── */
-.hero-section {
-  position: relative;
-  overflow: visible;
-}
 
 .hero-orb {
   position: absolute;
@@ -1720,7 +1766,7 @@ function resetForm() {
 }
 
 /* All hero content must sit above the orbs */
-.hero-section > *:not(.hero-orb) { position: relative; z-index: 1; }
+.hero-left, .hero-right { position: relative; z-index: 1; }
 
 @keyframes orb1 {
   0%   { transform: translate(0, 0) scale(1); }
@@ -1834,6 +1880,8 @@ function resetForm() {
 
 /* ── Responsive ─────────────────────────────────────────────── */
 @media (max-width: 1100px) {
+  .hero-section { grid-template-columns: 1fr; }
+  .hero-right { display: none; }
   .features-grid { grid-template-columns: repeat(2, 1fr); }
   .hiw-steps-full { grid-template-columns: repeat(3, 1fr); gap: 20px; }
   .hiw-steps-full::before { display: none; }
