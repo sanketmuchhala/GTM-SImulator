@@ -44,6 +44,31 @@
       <!-- Ready state -->
       <div v-else-if="viewState === 'ready'" class="gr-content">
 
+        <!-- Metric strip -->
+        <div class="gr-metric-strip">
+          <div class="gr-metric">
+            <span class="gr-metric-val">{{ icpConfidencePct }}%</span>
+            <span class="gr-metric-label">ICP Fit</span>
+          </div>
+          <div class="gr-metric-sep"></div>
+          <div class="gr-metric">
+            <span class="gr-metric-val" :class="`gr-readiness-val--${report.buyer_readiness?.label}`">
+              {{ report.buyer_readiness?.score }}/10
+            </span>
+            <span class="gr-metric-label">Buyer Readiness</span>
+          </div>
+          <div class="gr-metric-sep"></div>
+          <div class="gr-metric">
+            <span class="gr-metric-val">{{ angleLabel(report.winning_message?.angle) }}</span>
+            <span class="gr-metric-label">Best Angle</span>
+          </div>
+          <div class="gr-metric-sep"></div>
+          <div class="gr-metric">
+            <span class="gr-metric-val">{{ report.seven_day_experiment?.length || 7 }}-Day</span>
+            <span class="gr-metric-label">Experiment Ready</span>
+          </div>
+        </div>
+
         <!-- Executive Summary -->
         <section class="gr-section gr-summary-section">
           <div class="gr-section-label">Executive Summary</div>
@@ -65,7 +90,7 @@
               <div class="gr-conf-bar-wrap">
                 <div class="gr-conf-bar" :style="{ width: Math.round((report.best_icp.confidence_score || 0) * 100) + '%' }"></div>
               </div>
-              <span class="gr-conf-label">{{ Math.round((report.best_icp.confidence_score || 0) * 100) }}% confidence</span>
+              <span class="gr-conf-label">{{ Math.round((report.best_icp.confidence_score || 0) * 100) }}% ICP fit</span>
             </div>
             <div class="gr-icp-reasoning">{{ report.best_icp?.reasoning }}</div>
           </section>
@@ -136,6 +161,7 @@
               v-for="(risk, i) in report.risk_signals"
               :key="i"
               class="gr-risk-item"
+              :class="`gr-risk-item--${risk.severity}`"
             >
               <div class="gr-risk-header">
                 <span class="gr-risk-sev" :class="`gr-sev--${risk.severity}`">
@@ -198,10 +224,10 @@
           <div class="gr-next-text">{{ report.next_experiment }}</div>
         </section>
 
-        <!-- Disclaimer -->
-        <div class="gr-disclaimer">
-          This report is based on synthetic buyer simulation data, not real buyer responses.
-          Validate recommendations with real outbound before making major GTM decisions.
+        <!-- Simulation note -->
+        <div class="gr-sim-note">
+          💡 <strong>Simulation note</strong> — All personas, reactions, and scores are AI-generated.
+          This is directional signal, not real buyer data. Run real outbound to validate.
         </div>
 
       </div>
@@ -211,7 +237,7 @@
     <footer class="gr-footer" v-if="viewState !== 'loading'">
       <button class="gr-btn-ghost" @click="goToMessages">← Edit Messages</button>
       <div class="gr-footer-right">
-        <button class="gr-btn-download" @click="handleDownload" :disabled="!report">
+        <button class="gr-btn-primary" @click="handleDownload" :disabled="!report">
           ↓ Download GTM Report
         </button>
         <button class="gr-btn-ghost" @click="handleStartOver">Start Over</button>
@@ -283,6 +309,10 @@ const goalLabel = computed(() => {
 
 const selectedDayData = computed(() =>
   (report.value?.seven_day_experiment || []).find(d => d.day === selectedDay.value) ?? null
+)
+
+const icpConfidencePct = computed(() =>
+  Math.round((report.value?.best_icp?.confidence_score || 0) * 100)
 )
 
 function angleLabel(angle) {
@@ -907,13 +937,67 @@ loadAll()
 }
 
 /* Disclaimer */
-.gr-disclaimer {
-  font-size: 12px;
-  color: #4a4a6a;
-  text-align: center;
-  padding: 12px 0 4px;
-  font-style: italic;
+/* Simulation note (replaces old disclaimer) */
+.gr-sim-note {
+  background: rgba(99, 102, 241, 0.06);
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #8888cc;
+  line-height: 1.5;
 }
+
+/* Metric strip */
+.gr-metric-strip {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: #12121e;
+  border: 1px solid #1e1e2e;
+  border-radius: 10px;
+  padding: 16px 24px;
+  margin-bottom: 4px;
+}
+
+.gr-metric {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+
+.gr-metric-val {
+  font-size: 20px;
+  font-weight: 700;
+  color: #e8e8f0;
+  line-height: 1;
+}
+
+.gr-metric-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: #5a5a7a;
+  text-transform: uppercase;
+}
+
+.gr-metric-sep {
+  width: 1px;
+  height: 36px;
+  background: #1e1e2e;
+  flex-shrink: 0;
+}
+
+.gr-readiness-val--high { color: #4ade80; }
+.gr-readiness-val--medium { color: #f59e0b; }
+.gr-readiness-val--low { color: #f87171; }
+
+/* Risk item severity bands */
+.gr-risk-item--high { border-left: 3px solid #f87171; padding-left: 10px; }
+.gr-risk-item--medium { border-left: 3px solid #f59e0b; padding-left: 10px; }
+.gr-risk-item--low { border-left: 3px solid #4ade80; padding-left: 10px; }
 
 /* Footer */
 .gr-footer {
