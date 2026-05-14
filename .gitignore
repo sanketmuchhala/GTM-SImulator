@@ -9,7 +9,7 @@ Thumbs.db
 .env.development
 .env.test
 .env.production
-.env.example
+# .env.example is intentionally committed (contains only placeholders, no secrets)
 
 # Python
 __pycache__/
