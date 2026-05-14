@@ -128,7 +128,6 @@ import PersonaCard from '../components/PersonaCard.vue'
 import { generatePersonas, getGTMBrief } from '../api/gtm.js'
 import { getGTMState, setPersonas, getPersonas } from '../store/gtmSimulation.js'
 import { MOCK_PERSONAS_FULL } from '../mock/gtm_preview.js'
-import { getGTMBrief } from '../api/gtm.js'
 
 const props = defineProps({ briefId: String })
 const route = useRoute()
