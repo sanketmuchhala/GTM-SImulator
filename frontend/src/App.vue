@@ -1,8 +1,11 @@
 <template>
   <router-view />
+  <Analytics />
 </template>
 
 <script setup>
+import { Analytics } from '@vercel/analytics/vue'
+
 // Use Vue Router to manage pages
 </script>
 
