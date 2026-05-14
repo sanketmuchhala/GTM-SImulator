@@ -218,7 +218,7 @@ import HistoryDatabase from '../components/HistoryDatabase.vue'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
 import GTMBriefForm from '../components/GTMBriefForm.vue'
 import { submitGTMBrief, getGTMPreview } from '../api/gtm.js'
-import { setGTMBrief, setSimulationPreview, resetGTMState } from '../store/gtmSimulation.js'
+import { setGTMBrief, setSimulationPreview, resetGTMState, getGTMState } from '../store/gtmSimulation.js'
 import { MOCK_GTM_PREVIEW } from '../mock/gtm_preview.js'
 
 const router = useRouter()
@@ -273,7 +273,13 @@ async function handleBriefSubmit(payload) {
 }
 
 function continueToSimulation() {
-  router.push({ name: 'Process', params: { projectId: 'new' } })
+  const { briefId } = getGTMState()
+  if (briefId) {
+    router.push({ name: 'GTMPersonas', params: { briefId } })
+  } else {
+    // Fallback: if briefId was lost somehow, go back to form
+    homeState.value = 'form'
+  }
 }
 
 function resetForm() {
