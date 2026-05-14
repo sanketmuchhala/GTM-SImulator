@@ -239,7 +239,7 @@
         <span class="home-footer-credit">
           Forked from
           <a
-            href="https://github.com/mirofish/mirofish"
+            href="https://github.com/666ghj/MiroFish"
             target="_blank"
             rel="noopener noreferrer"
             class="home-footer-link"
