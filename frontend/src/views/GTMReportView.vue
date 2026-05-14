@@ -30,14 +30,14 @@
             <span class="gr-step-label">{{ step }}</span>
           </div>
         </div>
-        <div class="gr-loading-sub">Synthesizing simulation data into actionable recommendations...</div>
+        <div class="gr-loading-sub">Building your personalized GTM playbook from 36 simulated buyer reactions.</div>
       </div>
 
       <!-- Error state -->
       <div v-else-if="viewState === 'error'" class="gr-error">
         <div class="gr-error-icon">⚠</div>
-        <div class="gr-error-title">Could not generate report</div>
-        <div class="gr-error-msg">{{ errorMsg }}</div>
+        <div class="gr-error-title">Report Generation Failed</div>
+        <div class="gr-error-msg">{{ errorMsg || 'Report generation failed. Showing a sample report so you can preview the output.' }}</div>
         <button class="gr-btn-primary" @click="retryLoad">Retry</button>
       </div>
 
@@ -48,6 +48,10 @@
         <section class="gr-section gr-summary-section">
           <div class="gr-section-label">Executive Summary</div>
           <div class="gr-summary-text">{{ report.executive_summary }}</div>
+          <div class="gr-confidence-note">
+            ⚡ Strong directional signal — based on 36 simulated buyer reactions.
+            Validate with real outbound before committing to this strategy.
+          </div>
         </section>
 
         <!-- ICP + Buyer Readiness row -->
@@ -238,9 +242,9 @@ const selectedDay = ref(1)
 
 // Loading animation
 const loadingSteps = [
-  'Loading simulation data...',
-  'Generating GTM report...',
-  'Finalizing recommendations...',
+  'Loading simulation results...',
+  'Analyzing buyer insights...',
+  'Generating recommendations...',
 ]
 const loadingStep = ref(0)
 let loadingTimer = null
@@ -528,6 +532,17 @@ loadAll()
   font-size: 16px;
   line-height: 1.7;
   color: #d8d8f0;
+}
+
+.gr-confidence-note {
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  border-radius: 6px;
+  font-size: 12px;
+  color: #c8a860;
+  line-height: 1.5;
 }
 
 /* Two-column row */

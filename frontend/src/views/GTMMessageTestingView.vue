@@ -31,15 +31,15 @@
           </div>
         </div>
         <div class="mt-loading-sub">
-          Generating {{ totalPersonas }} persona reactions across 3 message angles...
+          Each persona responds independently based on their goals, objections, and skepticism level.
         </div>
       </div>
 
       <!-- Error state -->
       <div v-else-if="viewState === 'error'" class="mt-error">
         <div class="mt-error-icon">⚠</div>
-        <div class="mt-error-title">Something went wrong</div>
-        <div class="mt-error-msg">{{ errorMsg }}</div>
+        <div class="mt-error-title">Simulation Error</div>
+        <div class="mt-error-msg">{{ errorMsg || 'Message simulation failed. Loading example results so you can explore the UI.' }}</div>
         <button class="mt-btn-primary" @click="retryLoad">Retry</button>
       </div>
 
@@ -58,11 +58,11 @@
           <div class="mt-winner-stats" v-if="winnerSummary">
             <span>Avg interest <strong>{{ winnerSummary.average_interest_score }}</strong></span>
             <span class="mt-sep">·</span>
-            <span class="mt-pos">✓ {{ winnerSummary.positive_count }}</span>
+            <span class="mt-pos">✓ {{ winnerSummary.positive_count }} interested</span>
             <span class="mt-sep">·</span>
-            <span class="mt-neu">→ {{ winnerSummary.neutral_count }}</span>
+            <span class="mt-neu">→ {{ winnerSummary.neutral_count }} neutral</span>
             <span class="mt-sep">·</span>
-            <span class="mt-neg">✗ {{ winnerSummary.negative_count }}</span>
+            <span class="mt-neg">{{ winnerSummary.negative_count }} objections</span>
           </div>
           <div v-if="winner.close_test" class="mt-close-test">
             {{ winner.note }}
@@ -156,7 +156,7 @@
                   </td>
                   <td>
                     <span class="mt-verdict" :class="`mt-verdict--${rxn.verdict}`">
-                      {{ rxn.verdict === 'positive' ? '✓ Pos' : rxn.verdict === 'neutral' ? '→ Neutral' : '✗ Neg' }}
+                      {{ rxn.verdict === 'positive' ? '✓ Interested' : rxn.verdict === 'neutral' ? '→ Neutral' : '✗ Objection' }}
                     </span>
                   </td>
                   <td class="mt-td-reply">{{ rxn.simulated_reply }}</td>
@@ -230,10 +230,10 @@ const totalPersonas = ref(12)
 
 // Loading animation
 const loadingSteps = [
-  'Loading buyer personas...',
-  'Generating outreach messages...',
-  'Simulating buyer reactions...',
-  'Aggregating results...',
+  'Loading 12 buyer personas...',
+  'Generating 3 message variants...',
+  'Simulating 36 buyer reactions...',
+  'Scoring results...',
 ]
 const loadingStep = ref(0)
 let loadingTimer = null

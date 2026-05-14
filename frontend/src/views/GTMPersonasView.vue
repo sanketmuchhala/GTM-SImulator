@@ -19,7 +19,7 @@
 
       <!-- Loading state -->
       <div v-if="viewState === 'loading'" class="pg-loading">
-        <div class="pg-loading-title">Generating Buyer Personas</div>
+        <div class="pg-loading-title">AI-Generating 12 Buyer Personas</div>
         <div class="pg-steps">
           <div
             v-for="(step, i) in loadingSteps"
@@ -31,13 +31,13 @@
             <span class="pg-step-label">{{ step }}</span>
           </div>
         </div>
-        <div class="pg-loading-sub">This takes 10–30 seconds depending on the LLM provider.</div>
+        <div class="pg-loading-sub">Simulating how 12 different buyer types would evaluate your product.</div>
       </div>
 
       <!-- Error state -->
       <div v-else-if="viewState === 'error'" class="pg-error">
-        <div class="pg-error-title">Generation failed</div>
-        <div class="pg-error-msg">{{ errorMsg }}</div>
+        <div class="pg-error-title">Persona generation failed</div>
+        <div class="pg-error-msg">{{ errorMsg || 'The LLM may be unavailable — using sample personas instead.' }}</div>
         <button class="pg-btn-secondary" @click="retryGeneration">Retry</button>
       </div>
 
@@ -78,6 +78,10 @@
             >
               {{ f.label }}
             </button>
+          </div>
+
+          <div class="pg-confidence-note">
+            ⚡ Directional signal — validate your top segments with real outreach before committing.
           </div>
         </div>
 
@@ -128,9 +132,9 @@ const brief = ref(null)
 
 // Loading animation
 const loadingSteps = [
-  'Analyzing GTM brief...',
-  'Generating buyer personas...',
-  'Simulating buyer profiles...',
+  'Analyzing your GTM brief...',
+  'Identifying buyer segments...',
+  'Generating 12 buyer personas...',
 ]
 const loadingStep = ref(0)
 let loadingTimer = null
@@ -141,7 +145,7 @@ function startLoadingAnimation() {
     if (loadingStep.value < loadingSteps.length - 1) {
       loadingStep.value++
     }
-  }, 2200)
+  }, 2000)
 }
 
 function stopLoadingAnimation() {
@@ -420,6 +424,17 @@ onMounted(async () => {
   background: #000;
   color: #fff;
   border-color: #000;
+}
+
+.pg-confidence-note {
+  font-size: 11px;
+  color: #888;
+  font-family: 'JetBrains Mono', monospace;
+  margin-top: 8px;
+  padding: 6px 10px;
+  background: #FFFBF0;
+  border: 1px solid #FFE0A0;
+  border-radius: 3px;
 }
 
 /* Persona grid */
