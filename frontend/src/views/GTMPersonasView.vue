@@ -19,7 +19,7 @@
 
       <!-- Loading state -->
       <div v-if="viewState === 'loading'" class="pg-loading">
-        <div class="pg-loading-title">AI-Generating 12 Buyer Personas</div>
+        <div class="pg-loading-title">AI-Generating {{ numPersonas }} Buyer Personas</div>
         <div class="pg-steps">
           <div
             v-for="(step, i) in loadingSteps"
@@ -31,7 +31,7 @@
             <span class="pg-step-label">{{ step }}</span>
           </div>
         </div>
-        <div class="pg-loading-sub">Simulating how 12 different buyer types would evaluate your product.</div>
+        <div class="pg-loading-sub">Simulating how {{ numPersonas }} different buyer types would evaluate your product.</div>
       </div>
 
       <!-- Error state -->
@@ -44,21 +44,32 @@
       <!-- Persona grid -->
       <div v-else-if="viewState === 'ready'" class="pg-ready">
 
+        <!-- Mock data warning -->
+        <div v-if="isMockData" class="pg-mock-banner">
+          Demo mode — backend unreachable. Showing sample personas, not AI-generated from your brief.
+          <a href="https://github.com/sanketmuchhala/GTM-SImulator#quick-start" target="_blank" rel="noopener" class="pg-mock-link">Run locally →</a>
+        </div>
+
         <!-- Summary bar -->
         <div class="pg-summary-bar">
           <div class="pg-summary-stats">
             <span class="pg-stat">
-              <span class="pg-stat-num">{{ interestedCount }}</span>
+              <span class="pg-stat-num">{{ personas.length }}</span>
+              <span class="pg-stat-label">personas</span>
+            </span>
+            <span class="pg-stat-sep">·</span>
+            <span class="pg-stat">
+              <span class="pg-stat-num" style="color:var(--green)">{{ interestedCount }}</span>
               <span class="pg-stat-label">interested</span>
             </span>
             <span class="pg-stat-sep">·</span>
             <span class="pg-stat">
-              <span class="pg-stat-num">{{ neutralCount }}</span>
+              <span class="pg-stat-num" style="color:var(--amber)">{{ neutralCount }}</span>
               <span class="pg-stat-label">neutral</span>
             </span>
             <span class="pg-stat-sep">·</span>
             <span class="pg-stat">
-              <span class="pg-stat-num">{{ objectionCount }}</span>
+              <span class="pg-stat-num" style="color:var(--red)">{{ objectionCount }}</span>
               <span class="pg-stat-label">objections</span>
             </span>
             <span class="pg-stat-sep">·</span>
@@ -114,7 +125,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import PersonaCard from '../components/PersonaCard.vue'
-import { generatePersonas } from '../api/gtm.js'
+import { generatePersonas, getGTMBrief } from '../api/gtm.js'
 import { getGTMState, setPersonas, getPersonas } from '../store/gtmSimulation.js'
 import { MOCK_PERSONAS_FULL } from '../mock/gtm_preview.js'
 import { getGTMBrief } from '../api/gtm.js'
@@ -130,13 +141,20 @@ const viewState = ref('loading') // 'loading' | 'ready' | 'error'
 const errorMsg = ref('')
 const personas = ref([])
 const brief = ref(null)
+const isMockData = ref(false)
 
-// Loading animation
-const loadingSteps = [
+// Resolved persona count — read from store brief, fall back to 12
+const numPersonas = computed(() => {
+  const n = brief.value?.num_personas
+  return (n && n > 0) ? n : 12
+})
+
+// Loading animation — dynamic text
+const loadingSteps = computed(() => [
   'Analyzing your GTM brief...',
   'Identifying buyer segments...',
-  'Generating 12 buyer personas...',
-]
+  `Generating ${numPersonas.value} buyer personas...`,
+])
 const loadingStep = ref(0)
 let loadingTimer = null
 
@@ -207,6 +225,7 @@ async function loadBrief() {
   try {
     const res = await getGTMBrief(briefId.value)
     if (res.success) brief.value = res.data
+    else brief.value = res
   } catch (_) { /* brief display is optional */ }
 }
 
@@ -221,20 +240,25 @@ async function loadPersonas() {
     return
   }
 
-  // 2. Call the generation API
+  // 2. Call the generation API — pass the count from the saved brief
   try {
-    const res = await generatePersonas(briefId.value, 12)
-    if (res.success && Array.isArray(res.data) && res.data.length) {
-      personas.value = res.data
-      setPersonas(res.data)
+    const count = numPersonas.value
+    const res = await generatePersonas(briefId.value, count)
+    const data = res.data ?? res
+    if (Array.isArray(data) && data.length) {
+      personas.value = data
+      setPersonas(data)
+      isMockData.value = false
       viewState.value = 'ready'
     } else {
       throw new Error('Empty persona list returned')
     }
   } catch (err) {
-    // 3. Fallback to frontend mock
+    // 3. Backend unreachable (Vercel demo, no keys, offline) — show mock with banner
+    console.warn('Persona generation failed, using sample data:', err.message)
     personas.value = MOCK_PERSONAS_FULL
     setPersonas(MOCK_PERSONAS_FULL)
+    isMockData.value = true
     viewState.value = 'ready'
   }
   stopLoadingAnimation()
@@ -243,6 +267,7 @@ async function loadPersonas() {
 async function retryGeneration() {
   viewState.value = 'loading'
   errorMsg.value = ''
+  isMockData.value = false
   startLoadingAnimation()
   await loadPersonas()
 }
@@ -421,6 +446,28 @@ onMounted(async () => {
   background: var(--accent-dim);
   border-color: var(--accent);
   color: var(--text-primary);
+}
+
+/* ── Mock data banner ──────────────────────────────────────── */
+.pg-mock-banner {
+  background: rgba(248, 113, 113, 0.08);
+  border: 1px solid rgba(248, 113, 113, 0.25);
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 12px;
+  color: var(--red);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.pg-mock-link {
+  color: var(--red);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  white-space: nowrap;
+  margin-left: auto;
 }
 
 /* ── Confidence note ───────────────────────────────────────── */

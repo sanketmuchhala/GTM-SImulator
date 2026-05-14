@@ -46,6 +46,12 @@
       <!-- Ready state -->
       <div v-else-if="viewState === 'ready'" class="mt-content">
 
+        <!-- Mock data warning -->
+        <div v-if="isMockData" class="mt-mock-banner">
+          Demo mode — backend unreachable. Showing sample messages and reactions, not generated from your brief.
+          <a href="https://github.com/sanketmuchhala/GTM-SImulator#quick-start" target="_blank" rel="noopener" class="mt-mock-link">Run locally →</a>
+        </div>
+
         <!-- Winner banner -->
         <div class="mt-winner-banner" v-if="winner">
           <div class="mt-winner-left">
@@ -226,6 +232,7 @@ const briefId = computed(() => route.params.briefId)
 const viewState = ref('loading')
 const errorMsg = ref('')
 const brief = ref(null)
+const isMockData = ref(false)
 const messages = ref([])
 const reactions = ref([])
 const summaries = ref([])
@@ -365,6 +372,7 @@ async function loadAll() {
     }
     if (!Array.isArray(msgs) || !msgs.length) {
       msgs = MOCK_MESSAGES
+      isMockData.value = true
     }
 
     // 5. Fetch or generate reactions
@@ -378,6 +386,7 @@ async function loadAll() {
     }
     if (!reactionResult?.reactions?.length) {
       reactionResult = MOCK_REACTIONS_RESULT
+      isMockData.value = true
     }
 
     // 6. Persist to store
@@ -541,6 +550,27 @@ loadAll()
 .mt-error-msg { font-size: 14px; color: #8888aa; text-align: center; max-width: 400px; }
 
 /* Winner banner — refined, not overwhelming */
+.mt-mock-banner {
+  background: rgba(248,113,113,0.08);
+  border: 1px solid rgba(248,113,113,0.25);
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 12px;
+  color: var(--red);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.mt-mock-link {
+  color: var(--red);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  white-space: nowrap;
+  margin-left: auto;
+}
+
 .mt-winner-banner {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);

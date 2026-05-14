@@ -44,6 +44,12 @@
       <!-- Ready state -->
       <div v-else-if="viewState === 'ready'" class="gr-content">
 
+        <!-- Mock data warning -->
+        <div v-if="isMockData" class="gr-mock-banner">
+          Demo mode — backend unreachable. This report is sample data, not generated from your brief.
+          <a href="https://github.com/sanketmuchhala/GTM-SImulator#quick-start" target="_blank" rel="noopener" class="gr-mock-link">Run locally →</a>
+        </div>
+
         <!-- Metric strip -->
         <div class="gr-metric-strip">
           <div class="gr-metric">
@@ -262,6 +268,7 @@ const briefId = computed(() => route.params.briefId)
 
 const viewState = ref('loading')
 const errorMsg = ref('')
+const isMockData = ref(false)
 const brief = ref(null)
 const report = ref(null)
 const selectedDay = ref(1)
@@ -357,6 +364,7 @@ async function loadAll() {
 
     if (!rpt || !rpt.executive_summary) {
       rpt = MOCK_REPORT
+      isMockData.value = true
     }
 
     setReport(rpt)
@@ -523,6 +531,27 @@ loadAll()
 .gr-error-msg { font-size: 14px; color: #8888aa; text-align: center; max-width: 400px; }
 
 /* Content */
+.gr-mock-banner {
+  background: rgba(248,113,113,0.08);
+  border: 1px solid rgba(248,113,113,0.25);
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 12px;
+  color: var(--red);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.gr-mock-link {
+  color: var(--red);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  white-space: nowrap;
+  margin-left: auto;
+}
+
 .gr-content {
   display: flex;
   flex-direction: column;
