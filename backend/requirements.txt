@@ -1,35 +1,24 @@
-# ===========================================
-# MiroFish Backend Dependencies
-# ===========================================
+# GTM Simulation Lab — Backend Dependencies
 # Python 3.11+ required
-# Install: pip install -r requirements.txt
-# ===========================================
 
-# ============= Core Framework =============
+# ── Core framework ─────────────────────────────────────────────
 flask>=3.0.0
 flask-cors>=6.0.0
 
-# ============= LLM =============
-# OpenAI SDK (unified OpenAI-compatible API calls)
+# ── Production WSGI server ─────────────────────────────────────
+gunicorn>=21.0.0
+
+# ── LLM (OpenAI-compatible, works with OpenRouter) ────────────
 openai>=1.0.0
 
-# ============= Zep Cloud =============
+# ── Memory (Zep — only used by legacy OASIS flow) ─────────────
 zep-cloud==3.13.0
 
-# ============= OASIS Social Media Simulation =============
-# OASIS social simulation framework
-camel-oasis==0.2.5
-camel-ai==0.2.78
-
-# ============= File Processing =============
+# ── File processing ────────────────────────────────────────────
 PyMuPDF>=1.24.0
-# Encoding detection (supports non-UTF-8 text files)
 charset-normalizer>=3.0.0
 chardet>=5.0.0
 
-# ============= Utilities =============
-# Environment variable loading
+# ── Utilities ──────────────────────────────────────────────────
 python-dotenv>=1.0.0
-
-# Data validation
 pydantic>=2.0.0

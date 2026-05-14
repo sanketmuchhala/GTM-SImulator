@@ -65,10 +65,9 @@ class Config:
 
     @classmethod
     def validate(cls):
-        """Validate required configuration"""
+        """Validate required configuration. Only LLM_API_KEY is required for the GTM flow."""
         errors = []
         if not cls.LLM_API_KEY:
             errors.append("LLM_API_KEY is not configured")
-        if not cls.ZEP_API_KEY:
-            errors.append("ZEP_API_KEY is not configured")
+        # ZEP_API_KEY is optional — only needed for the legacy OASIS simulation flow
         return errors

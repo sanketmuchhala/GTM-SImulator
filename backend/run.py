@@ -38,7 +38,8 @@ def main():
 
     # Get runtime configuration
     host = os.environ.get('FLASK_HOST', '0.0.0.0')
-    port = int(os.environ.get('FLASK_PORT', 5001))
+    # Render (and most PaaS) injects PORT; FLASK_PORT is the local dev override
+    port = int(os.environ.get('PORT') or os.environ.get('FLASK_PORT', 5001))
     debug = Config.DEBUG
 
     # Start server
