@@ -427,10 +427,10 @@ loadAll()
 }
 
 .gr-brand {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.12em;
-  color: #6366f1;
+  color: var(--accent);
   cursor: pointer;
 }
 
@@ -440,9 +440,9 @@ loadAll()
   gap: 6px;
   font-size: 13px;
 }
-.gr-brief-product { font-weight: 600; color: #e8e8f0; }
-.gr-brief-sep { color: #3a3a5c; }
-.gr-brief-goal { color: #8888aa; }
+.gr-brief-product { font-weight: 600; color: var(--text-primary); }
+.gr-brief-sep     { color: var(--border-muted); }
+.gr-brief-goal    { color: var(--text-secondary); }
 
 .gr-step-badge {
   font-size: 11px;

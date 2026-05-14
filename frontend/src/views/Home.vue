@@ -140,12 +140,12 @@
             <div v-else-if="homeState === 'submitting'" class="console-section preview-section">
               <div class="preview-header">
                 <span class="preview-status-dot loading"></span>
-                <span class="preview-status-text">Building GTM simulation...</span>
+                <span class="preview-status-text">Analyzing GTM brief...</span>
               </div>
-              <div class="preview-loading-rows">
-                <div class="loading-row" v-for="n in 3" :key="n">
-                  <div class="loading-skeleton"></div>
-                </div>
+              <div class="submitting-steps">
+                <div class="sub-step sub-step--done">● Brief validated</div>
+                <div class="sub-step sub-step--active">◉ Generating buyer persona preview...</div>
+                <div class="sub-step sub-step--pending">○ Preparing simulation environment</div>
               </div>
             </div>
 
@@ -1116,25 +1116,22 @@ html[lang="en"] .workflow-list {
   line-height: 1.4;
 }
 
-/* Loading skeleton */
-.preview-loading-rows {
+/* Submitting state steps */
+.submitting-steps {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
+  padding: 8px 0;
 }
 
-.loading-skeleton {
-  height: 60px;
-  background: linear-gradient(90deg, #F0F0F0 25%, #E0E0E0 50%, #F0F0F0 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.4s infinite;
-  border-radius: 4px;
+.sub-step {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
 }
 
-@keyframes shimmer {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
+.sub-step--done    { color: #4CAF50; }
+.sub-step--active  { color: #111; animation: pulse 1.2s ease-in-out infinite; }
+.sub-step--pending { color: #CCC; }
 
 /* Preview action buttons */
 .preview-actions {

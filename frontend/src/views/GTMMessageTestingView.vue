@@ -453,10 +453,10 @@ loadAll()
 }
 
 .mt-brand {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.12em;
-  color: #6366f1;
+  color: var(--accent);
   cursor: pointer;
 }
 
@@ -467,16 +467,16 @@ loadAll()
   font-size: 13px;
 }
 
-.mt-brief-product { font-weight: 600; color: #e8e8f0; }
-.mt-brief-sep { color: #3a3a5c; }
-.mt-brief-goal { color: #8888aa; }
+.mt-brief-product { font-weight: 600; color: var(--text-primary); }
+.mt-brief-sep     { color: var(--border-muted); }
+.mt-brief-goal    { color: var(--text-secondary); }
 
 .mt-step-badge {
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.08em;
-  color: #6366f1;
-  background: rgba(99, 102, 241, 0.12);
+  color: var(--accent);
+  background: var(--accent-dim);
   border: 1px solid rgba(99, 102, 241, 0.25);
   padding: 4px 10px;
   border-radius: 4px;
