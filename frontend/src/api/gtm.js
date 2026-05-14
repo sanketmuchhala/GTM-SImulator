@@ -49,3 +49,35 @@ export const generatePersonas = (briefId, count = 12) =>
  */
 export const getPersonas = (briefId) =>
   service.get(`/api/gtm/personas/${briefId}`)
+
+/**
+ * Generate 3 outreach message variants for a brief (LLM + fallback to mock).
+ * Idempotent — returns cached messages if already generated.
+ * @param {string} briefId
+ * @returns {Promise<{success: boolean, data: object[], cached: boolean}>}
+ */
+export const generateMessages = (briefId) =>
+  requestWithRetry(() => service.post(`/api/gtm/messages/${briefId}`), 3, 1500)
+
+/**
+ * Retrieve cached messages for a brief (generates if not yet cached).
+ * @param {string} briefId
+ */
+export const getMessages = (briefId) =>
+  service.get(`/api/gtm/messages/${briefId}`)
+
+/**
+ * Simulate all persona × message reactions for a brief (LLM + fallback to mock).
+ * Idempotent — returns cached reactions if already simulated.
+ * @param {string} briefId
+ * @returns {Promise<{success: boolean, data: {reactions, summaries, winner}, cached: boolean}>}
+ */
+export const generateReactions = (briefId) =>
+  requestWithRetry(() => service.post(`/api/gtm/reactions/${briefId}`), 3, 2000)
+
+/**
+ * Retrieve cached reaction results for a brief (auto-simulates if missing).
+ * @param {string} briefId
+ */
+export const getReactions = (briefId) =>
+  service.get(`/api/gtm/reactions/${briefId}`)

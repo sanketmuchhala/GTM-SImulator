@@ -28,6 +28,19 @@ const state = reactive({
    * }>|null}
    */
   personas: null,
+  /** @type {Array<{id, angle, subject_line, body, target_persona_reasoning}>|null} */
+  messages: null,
+  /**
+   * Full reaction result from POST/GET /api/gtm/reactions/<id>.
+   * @type {{
+   *   reactions: Array<{id, persona_id, message_id, interest_score, clarity_score,
+   *     trust_score, urgency_score, objection, buying_trigger, preferred_cta,
+   *     risk_signal, simulated_reply, verdict}>|null,
+   *   summaries: Array<{message_id, angle, average_interest_score, positive_count, ...}>|null,
+   *   winner: {winner_message_id, winner_angle, close_test, note}|null
+   * }|null}
+   */
+  reactionResult: null,
   /** @type {string|null} */
   error: null,
 })
@@ -52,6 +65,24 @@ export function getPersonas() {
   return state.personas
 }
 
+export function setMessageResults(data) {
+  state.messages = data.messages ?? data
+  if (data.reactions !== undefined) {
+    state.reactionResult = {
+      reactions: data.reactions,
+      summaries: data.summaries ?? null,
+      winner: data.winner ?? null,
+    }
+  }
+}
+
+export function getMessageResults() {
+  return {
+    messages: state.messages,
+    reactionResult: state.reactionResult,
+  }
+}
+
 export function setGTMError(message) {
   state.error = message
   state.status = 'error'
@@ -74,6 +105,8 @@ export function resetGTMState() {
   state.status = 'idle'
   state.preview = null
   state.personas = null
+  state.messages = null
+  state.reactionResult = null
   state.error = null
 }
 
