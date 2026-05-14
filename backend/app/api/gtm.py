@@ -172,3 +172,150 @@ def list_briefs():
         'data': [b.to_dict() for b in briefs],
         'count': len(briefs),
     })
+
+
+# ── Message generation ────────────────────────────────────────────────────────
+
+def _messages_path(brief_id: str) -> str:
+    from ..config import Config
+    return os.path.join(Config.UPLOAD_FOLDER, 'gtm_briefs', brief_id, 'messages.json')
+
+
+def _reactions_path(brief_id: str) -> str:
+    from ..config import Config
+    return os.path.join(Config.UPLOAD_FOLDER, 'gtm_briefs', brief_id, 'reactions.json')
+
+
+def _save_json(path: str, data):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+
+def _load_json(path: str):
+    if not os.path.exists(path):
+        return None
+    with open(path, 'r', encoding='utf-8') as f:
+        return json.load(f)
+
+
+@gtm_bp.route('/messages/<brief_id>', methods=['POST'])
+def generate_messages(brief_id: str):
+    """
+    POST /api/gtm/messages/<brief_id>
+
+    Generate 3 outreach messages using LLM + GTM brief context.
+    Idempotent — returns cached messages if already generated.
+    Requires personas to already be generated (or auto-generates them).
+    """
+    brief = GTMBriefManager.get_brief(brief_id)
+    if not brief:
+        return jsonify({'success': False, 'error': f'Brief not found: {brief_id}'}), 404
+
+    cached = _load_json(_messages_path(brief_id))
+    if cached:
+        return jsonify({'success': True, 'data': cached, 'cached': True})
+
+    try:
+        personas = _load_json(_personas_path(brief_id))
+        if not personas:
+            from ..services.gtm_persona_generator import GTMPersonaGenerator
+            personas = GTMPersonaGenerator().generate(brief, count=12)
+            _save_json(_personas_path(brief_id), personas)
+
+        from ..services.gtm_message_generator import GTMMessageGenerator
+        messages = GTMMessageGenerator().generate(brief, personas)
+        _save_json(_messages_path(brief_id), messages)
+        logger.info(f"Generated {len(messages)} messages for brief {brief_id}")
+        return jsonify({'success': True, 'data': messages, 'cached': False})
+    except Exception as e:
+        logger.error(f"Message generation failed: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@gtm_bp.route('/messages/<brief_id>', methods=['GET'])
+def get_messages(brief_id: str):
+    """GET /api/gtm/messages/<brief_id> — return cached messages; auto-generate if missing."""
+    brief = GTMBriefManager.get_brief(brief_id)
+    if not brief:
+        return jsonify({'success': False, 'error': f'Brief not found: {brief_id}'}), 404
+
+    cached = _load_json(_messages_path(brief_id))
+    if cached:
+        return jsonify({'success': True, 'data': cached, 'cached': True})
+
+    try:
+        personas = _load_json(_personas_path(brief_id)) or []
+        from ..services.gtm_message_generator import GTMMessageGenerator
+        messages = GTMMessageGenerator().generate(brief, personas)
+        _save_json(_messages_path(brief_id), messages)
+        return jsonify({'success': True, 'data': messages, 'cached': False})
+    except Exception as e:
+        logger.error(f"On-demand message generation failed: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+# ── Reaction simulation ───────────────────────────────────────────────────────
+
+@gtm_bp.route('/reactions/<brief_id>', methods=['POST'])
+def generate_reactions(brief_id: str):
+    """
+    POST /api/gtm/reactions/<brief_id>
+
+    Simulate all persona × message reactions (36 total) using LLM.
+    Also runs aggregation and returns summaries + winner in the same response.
+    Idempotent — returns cached if already simulated.
+    """
+    brief = GTMBriefManager.get_brief(brief_id)
+    if not brief:
+        return jsonify({'success': False, 'error': f'Brief not found: {brief_id}'}), 404
+
+    cached = _load_json(_reactions_path(brief_id))
+    if cached:
+        return jsonify({'success': True, 'data': cached, 'cached': True})
+
+    try:
+        personas = _load_json(_personas_path(brief_id))
+        if not personas:
+            from ..services.gtm_persona_generator import GTMPersonaGenerator
+            personas = GTMPersonaGenerator().generate(brief, count=12)
+            _save_json(_personas_path(brief_id), personas)
+
+        messages = _load_json(_messages_path(brief_id))
+        if not messages:
+            from ..services.gtm_message_generator import GTMMessageGenerator
+            messages = GTMMessageGenerator().generate(brief, personas)
+            _save_json(_messages_path(brief_id), messages)
+
+        from ..services.gtm_reaction_simulator import GTMReactionSimulator
+        from ..services.gtm_aggregator import aggregate
+
+        reactions = GTMReactionSimulator().simulate_all(messages, personas)
+        agg = aggregate(messages, reactions)
+
+        result = {
+            'reactions': reactions,
+            'summaries': agg['summaries'],
+            'winner': agg['winner'],
+        }
+        _save_json(_reactions_path(brief_id), result)
+        logger.info(f"Simulated {len(reactions)} reactions for brief {brief_id}")
+        return jsonify({'success': True, 'data': result, 'cached': False})
+    except Exception as e:
+        logger.error(f"Reaction simulation failed: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@gtm_bp.route('/reactions/<brief_id>', methods=['GET'])
+def get_reactions(brief_id: str):
+    """GET /api/gtm/reactions/<brief_id> — return cached reactions; auto-simulate if missing."""
+    brief = GTMBriefManager.get_brief(brief_id)
+    if not brief:
+        return jsonify({'success': False, 'error': f'Brief not found: {brief_id}'}), 404
+
+    cached = _load_json(_reactions_path(brief_id))
+    if cached:
+        return jsonify({'success': True, 'data': cached, 'cached': True})
+
+    # Delegate to POST handler logic
+    return generate_reactions(brief_id)
