@@ -319,3 +319,78 @@ def get_reactions(brief_id: str):
 
     # Delegate to POST handler logic
     return generate_reactions(brief_id)
+
+
+# ── GTM Report ────────────────────────────────────────────────────────────────
+
+def _report_path(brief_id: str) -> str:
+    from ..config import Config
+    return os.path.join(Config.UPLOAD_FOLDER, 'gtm_briefs', brief_id, 'report.json')
+
+
+@gtm_bp.route('/report/<brief_id>', methods=['POST'])
+def generate_report(brief_id: str):
+    """
+    POST /api/gtm/report/<brief_id>
+
+    Generate a structured GTM report from existing simulation data.
+    Idempotent — returns cached report if already generated.
+    Auto-generates any missing upstream data (personas, messages, reactions).
+    """
+    brief = GTMBriefManager.get_brief(brief_id)
+    if not brief:
+        return jsonify({'success': False, 'error': f'Brief not found: {brief_id}'}), 404
+
+    cached = _load_json(_report_path(brief_id))
+    if cached:
+        return jsonify({'success': True, 'data': cached, 'cached': True})
+
+    try:
+        # Ensure all upstream data exists
+        personas = _load_json(_personas_path(brief_id))
+        if not personas:
+            from ..services.gtm_persona_generator import GTMPersonaGenerator
+            personas = GTMPersonaGenerator().generate(brief, count=12)
+            _save_json(_personas_path(brief_id), personas)
+
+        messages = _load_json(_messages_path(brief_id))
+        if not messages:
+            from ..services.gtm_message_generator import GTMMessageGenerator
+            messages = GTMMessageGenerator().generate(brief, personas)
+            _save_json(_messages_path(brief_id), messages)
+
+        reactions_data = _load_json(_reactions_path(brief_id))
+        if not reactions_data:
+            from ..services.gtm_reaction_simulator import GTMReactionSimulator
+            from ..services.gtm_aggregator import aggregate
+            reactions = GTMReactionSimulator().simulate_all(messages, personas)
+            agg = aggregate(messages, reactions)
+            reactions_data = {'reactions': reactions, 'summaries': agg['summaries'], 'winner': agg['winner']}
+            _save_json(_reactions_path(brief_id), reactions_data)
+
+        reactions = reactions_data.get('reactions', [])
+        summaries = reactions_data.get('summaries', [])
+        winner = reactions_data.get('winner', {})
+
+        from ..services.gtm_report_generator import GTMReportGenerator
+        report = GTMReportGenerator().generate(brief, personas, messages, reactions, summaries, winner)
+        _save_json(_report_path(brief_id), report)
+        logger.info(f"GTM report generated for brief {brief_id}")
+        return jsonify({'success': True, 'data': report, 'cached': False})
+    except Exception as e:
+        logger.error(f"GTM report generation failed: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@gtm_bp.route('/report/<brief_id>', methods=['GET'])
+def get_report(brief_id: str):
+    """GET /api/gtm/report/<brief_id> — return cached report; auto-generate if missing."""
+    brief = GTMBriefManager.get_brief(brief_id)
+    if not brief:
+        return jsonify({'success': False, 'error': f'Brief not found: {brief_id}'}), 404
+
+    cached = _load_json(_report_path(brief_id))
+    if cached:
+        return jsonify({'success': True, 'data': cached, 'cached': True})
+
+    return generate_report(brief_id)
