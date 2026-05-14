@@ -432,9 +432,9 @@ loadAll()
 <style scoped>
 .mt-page {
   min-height: 100vh;
-  background: #0a0a0f;
-  color: #e8e8f0;
-  font-family: 'Inter', 'SF Pro Display', system-ui, sans-serif;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
   display: flex;
   flex-direction: column;
 }
@@ -540,59 +540,61 @@ loadAll()
 .mt-error-title { font-size: 18px; font-weight: 700; color: #e8e8f0; }
 .mt-error-msg { font-size: 14px; color: #8888aa; text-align: center; max-width: 400px; }
 
-/* Winner banner */
+/* Winner banner — refined, not overwhelming */
 .mt-winner-banner {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(99, 102, 241, 0.05));
-  border: 1px solid rgba(99, 102, 241, 0.4);
-  border-radius: 12px;
-  padding: 20px 28px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--accent);
+  border-radius: 10px;
+  padding: 16px 20px;
   display: flex;
   align-items: center;
-  gap: 24px;
-  margin-bottom: 28px;
+  gap: 20px;
+  margin-bottom: 24px;
   flex-wrap: wrap;
 }
 
 .mt-winner-left {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .mt-winner-star {
-  font-size: 28px;
-  color: #f59e0b;
+  font-size: 18px;
+  color: var(--amber);
 }
 
 .mt-winner-label {
   font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.12em;
-  color: #6366f1;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  text-transform: uppercase;
 }
 
 .mt-winner-angle {
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 700;
-  color: #e8e8f0;
+  color: var(--text-primary);
 }
 
 .mt-winner-stats {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
-  color: #8888aa;
+  font-size: 13px;
+  color: var(--text-secondary);
 }
 
-.mt-sep { color: #3a3a5c; }
+.mt-sep { color: var(--border-muted); }
 
 .mt-close-test {
   font-size: 12px;
-  color: #f59e0b;
+  color: var(--amber);
   border-top: 1px solid rgba(245, 158, 11, 0.2);
   padding-top: 8px;
-  margin-top: 8px;
+  margin-top: 4px;
   flex-basis: 100%;
 }
 
@@ -802,10 +804,10 @@ loadAll()
 }
 
 .mt-score-bar-wrap {
-  height: 4px;
-  background: #1e1e2e;
-  border-radius: 2px;
-  width: 60px;
+  height: 6px;
+  background: var(--border-subtle);
+  border-radius: 3px;
+  width: 64px;
   display: inline-block;
   margin-right: 6px;
   vertical-align: middle;
@@ -813,9 +815,9 @@ loadAll()
 
 .mt-score-bar {
   height: 100%;
-  background: #6366f1;
-  border-radius: 2px;
-  transition: width 0.4s;
+  background: var(--accent);
+  border-radius: 3px;
+  transition: width 0.5s ease;
 }
 
 .mt-score-bar--high { background: #4ade80; }
@@ -859,20 +861,23 @@ loadAll()
   max-width: 300px;
 }
 
-/* Insights */
+/* Insights — grouped conclusion block */
 .mt-insights {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  padding-top: 16px;
-  border-top: 1px solid #1e1e2e;
+  gap: 16px;
+  padding: 16px;
+  margin-top: 4px;
+  background: var(--bg-elevated);
+  border-radius: 0 0 10px 10px;
+  border-top: 1px solid var(--border-subtle);
 }
 
 .mt-insight-label {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  color: #5a5a7a;
+  letter-spacing: 0.1em;
+  color: var(--text-tertiary);
   margin-bottom: 8px;
   text-transform: uppercase;
 }
@@ -883,14 +888,15 @@ loadAll()
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
 }
 
 .mt-insight-list li {
   font-size: 12px;
-  color: #8888aa;
+  color: var(--text-secondary);
   padding-left: 8px;
-  border-left: 2px solid #2e2e4e;
+  border-left: 2px solid var(--border-muted);
+  line-height: 1.4;
 }
 
 .mt-insight-chips {
