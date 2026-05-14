@@ -81,3 +81,19 @@ export const generateReactions = (briefId) =>
  */
 export const getReactions = (briefId) =>
   service.get(`/api/gtm/reactions/${briefId}`)
+
+/**
+ * Generate a structured GTM report for a brief (LLM + deterministic + mock fallback).
+ * Idempotent — returns cached report if already generated.
+ * @param {string} briefId
+ * @returns {Promise<{success: boolean, data: object, cached: boolean}>}
+ */
+export const generateReport = (briefId) =>
+  requestWithRetry(() => service.post(`/api/gtm/report/${briefId}`), 3, 2000)
+
+/**
+ * Retrieve cached GTM report for a brief (auto-generates if missing).
+ * @param {string} briefId
+ */
+export const getReport = (briefId) =>
+  service.get(`/api/gtm/report/${briefId}`)

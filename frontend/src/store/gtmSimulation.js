@@ -41,6 +41,8 @@ const state = reactive({
    * }|null}
    */
   reactionResult: null,
+  /** @type {object|null} Full GTMReport from POST/GET /api/gtm/report/<id> */
+  report: null,
   /** @type {string|null} */
   error: null,
 })
@@ -83,6 +85,14 @@ export function getMessageResults() {
   }
 }
 
+export function setReport(reportData) {
+  state.report = reportData
+}
+
+export function getReport() {
+  return state.report
+}
+
 export function setGTMError(message) {
   state.error = message
   state.status = 'error'
@@ -107,6 +117,7 @@ export function resetGTMState() {
   state.personas = null
   state.messages = null
   state.reactionResult = null
+  state.report = null
   state.error = null
 }
 
