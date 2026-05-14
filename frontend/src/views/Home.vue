@@ -239,11 +239,11 @@
         <span class="home-footer-credit">
           Forked from
           <a
-            href="https://github.com/camel-ai/oasis"
+            href="https://github.com/mirofish/mirofish"
             target="_blank"
             rel="noopener noreferrer"
             class="home-footer-link"
-          >MiroFish / OASIS ↗</a>
+          >MiroFish ↗</a>
         </span>
       </footer>
     </div>
