@@ -111,9 +111,12 @@ function rebuildGraph(count) {
 
   // Update simulation
   simulation.nodes(nodes)
-  simulation.force('link', d3.forceLink(links).id(d => d.id).distance(r * 5).strength(0.3))
-  simulation.force('charge', d3.forceManyBody().strength(n > 60 ? -60 : -140))
-  simulation.force('collision', d3.forceCollide(r + (n > 60 ? 8 : 16)))
+  // Charge scales so nodes stay spread across the full box at any count
+  const charge = -Math.max(30, 180 / Math.sqrt(n) * (n > 60 ? 1.8 : 1))
+  simulation.force('link', d3.forceLink(links).id(d => d.id).distance(r * 4.5).strength(0.25))
+  simulation.force('charge', d3.forceManyBody().strength(charge).distanceMax(W * 0.6))
+  simulation.force('collision', d3.forceCollide(r + 5))
+  simulation.force('center', d3.forceCenter(W / 2, H / 2).strength(0.04))
   simulation.alpha(0.5).restart()
 
   // Links
@@ -205,10 +208,18 @@ onMounted(() => {
     .velocityDecay(0.55)
     .on('tick', () => {
       if (!nodes.length) return
-      const r = nodes[0]?.r || 10
+      // Soft boundary — proportional velocity nudge instead of hard clamp
+      // so nodes use the full space and never stick to edges
       nodes.forEach(d => {
-        d.x = Math.max(r + 10, Math.min(W - r - 10, d.x || W / 2))
-        d.y = Math.max(r + 10, Math.min(H - r - 10, d.y || H / 2))
+        const pad = (d.r || 10) + 6
+        const k = 0.12
+        if (d.x < pad)     d.vx += k * (pad - d.x)
+        if (d.x > W - pad) d.vx -= k * (d.x - W + pad)
+        if (d.y < pad)     d.vy += k * (pad - d.y)
+        if (d.y > H - pad) d.vy -= k * (d.y - H + pad)
+        // Absolute fallback — keep within SVG
+        d.x = Math.max(0, Math.min(W, d.x || W / 2))
+        d.y = Math.max(0, Math.min(H, d.y || H / 2))
       })
       linkSel?.attr('x1', d => d.source.x).attr('y1', d => d.source.y)
                .attr('x2', d => d.target.x).attr('y2', d => d.target.y)
