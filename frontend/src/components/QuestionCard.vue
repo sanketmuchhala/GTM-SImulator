@@ -12,9 +12,7 @@
       <span>Next question</span>
       <span v-if="reason" class="for">· fills in {{ reason }}</span>
     </header>
-    <p class="text">
-      <template v-for="(w, i) in words" :key="i"><span class="w" :style="{ '--i': i }">{{ w }}</span>{{ i < words.length - 1 ? ' ' : '' }}</template>
-    </p>
+    <p class="text">{{ question }}</p>
     <div class="replies" role="group" aria-label="Quick replies">
       <button type="button" class="r r--answer" @click="$emit('answer')">
         <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 4.5h10v6H7l-3 2.5v-2.5H3z" /></svg>Answer
@@ -36,16 +34,13 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
-
-const props = defineProps({
+defineProps({
   question: { type: String, default: '' },
   reason: { type: String, default: '' },
   active: { type: Boolean, default: false },
   pending: { type: Boolean, default: false },
 })
 defineEmits(['answer', 'quick'])
-const words = computed(() => props.question.split(/\s+/).filter(Boolean))
 </script>
 
 <style scoped>
@@ -69,8 +64,6 @@ const words = computed(() => props.question.split(/\s+/).filter(Boolean))
 .text { overflow-wrap: anywhere; margin: 8px 0 12px; font-family: 'Space Grotesk', var(--font-sans); font-size: 17.5px; font-weight: 600; line-height: 1.4;
   letter-spacing: -0.01em; color: #f5f5f5; text-wrap: balance; }
 /* Words settle in one after another */
-.w { display: inline-block; animation: word 380ms var(--ease-out) both; animation-delay: calc(120ms + var(--i) * 28ms); }
-@keyframes word { from { opacity: 0; transform: translateY(5px); filter: blur(3px); } to { opacity: 1; transform: none; filter: none; } }
 
 .replies { display: flex; flex-wrap: wrap; gap: 6px; }
 .r { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 550; padding: 6px 11px; border-radius: 999px;
@@ -93,5 +86,4 @@ const words = computed(() => props.question.split(/\s+/).filter(Boolean))
 .past-mark { flex-shrink: 0; font-size: 10px; font-weight: 700; color: #4b5563; border: 1px solid #262626; border-radius: 4px;
   padding: 0 4px; line-height: 16px; }
 
-@media (prefers-reduced-motion: reduce) { .w { animation: none; } }
 </style>
