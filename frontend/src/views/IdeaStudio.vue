@@ -492,11 +492,17 @@ async function send(text, opts = {}) {
     ok = true
   } catch (e) {
     finishOpenSteps(live, 'failed')
-    messages.value.splice(messages.value.indexOf(live), 1)
-    messages.value.splice(messages.value.length - 1, 1)   // drop the unanswered user message
-    if (!opts.assistance) draft.value = content
-    nextTick(autoGrow)
-    error.value = e.name === 'AbortError' ? '' : (e.message || 'Something went wrong.')
+    if (live.support && live.content.trim()) {
+      live.streaming = false
+      live.acknowledgment = live.content
+      live.notice = e.name === 'AbortError' ? 'Response stopped.' : 'The response was interrupted.'
+    } else {
+      messages.value.splice(messages.value.indexOf(live), 1)
+      messages.value.splice(messages.value.length - 1, 1)
+      if (!opts.assistance) draft.value = content
+      nextTick(autoGrow)
+      error.value = e.name === 'AbortError' ? '' : (e.message || 'Something went wrong.')
+    }
   } finally {
     controller = null
     busy.value = false
@@ -639,14 +645,17 @@ function onEvent(ev, live) {
       step(live, 'cofounder', { status: 'running', detail: 'thinking' })
       live.notice = ev.reason
       break
+    case 'support':
+      live.support = true
+      live.trace = []
+      break
     case 'delta':
       status.value = ''
-      if (!live.content) {
+      if (!live.content && !live.support) {
         if (live.trace?.find(s => s.id === 'research')?.status === 'running') step(live, 'research', { status: 'done', detail: 'done' })
         step(live, 'cofounder', { status: 'running', detail: 'writing' })
       }
       live.content += ev.text
-      live.tail = ev.text.length
       scrollDown()
       break
     case 'reply':
@@ -659,10 +668,15 @@ function onEvent(ev, live) {
       if (ev.notice) live.notice = ev.notice
       if (Array.isArray(ev.actions)) live.actions = ev.actions
       status.value = ''
+      if (ev.support) {
+        live.trace = []
+        live.ask = null
+        scrollDown()
+        break
+      }
       updating.value = !ev.brainstorm
       step(live, 'cofounder', { status: 'done', detail: ev.source === 'scripted' ? 'used a scripted question' : 'replied' })
       if (!ev.brainstorm) step(live, 'analyst', { status: 'running', detail: 'updating the live idea' })
-      live.tail = 0
       live.ask = ev.ask || null
       if (ev.research) live.research = ev.research
       scrollDown()

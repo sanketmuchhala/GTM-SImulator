@@ -70,7 +70,7 @@ def test_full_turn_streams_reply_and_applies_validated_patch():
                             'change_summary': 'Captured the problem.'}])
     ev = events(studio.run_turn(new(), [], 'A voice agent that confirms dental appointments', chat, extract))
     types = [e['type'] for e in ev]
-    assert types == ['start', 'delta', 'delta', 'reply', 'state', 'done']
+    assert types == ['start', 'reply', 'state', 'done']
     reply = next(e for e in ev if e['type'] == 'reply')
     assert reply['source'] == 'llm' and reply['acknowledgment'] == 'Got it.'
     assert reply['ask']['field'] != 'problem.statement'
@@ -357,8 +357,6 @@ def test_off_domain_answer_is_quarantined_and_blocks_prefill(client):
 
 
 @pytest.mark.parametrize('text', [
-    'some examples',
-    'help me increase the score to moe than 60',
     'Meet Alex, a solo founder who prioritizes original thinking.',
     'mark that as pending and top priority',
 ])
@@ -383,3 +381,38 @@ def test_simulation_coherence_check_rejects_existing_mixed_brief():
     state = st.founder_edit(state, '/problem/statement', 'Cell towers draw too much power')
     judge = FakeExtract([{'aligned': False, 'issue': 'The pain describes telecommunications.'}])
     assert 'telecommunications' in studio.check_brief_coherence(state, judge)
+
+
+@pytest.mark.parametrize('message', [
+    'I am not sure. Can you give me a hint, without answering it for me?',
+    'some examples',
+])
+def test_coaching_stream_preserves_agent_text_and_ignores_stale_history(message):
+    state = st.founder_edit(new(), '/problem/statement', 'Founders lose originality when outsourcing early thinking.')
+    state['history'].append({'asked': {'field': 'problem.severity', 'turn': 1}})
+    history = [{'role': 'assistant', 'content': 'When did Alex last have a cell tower performance issue?'}]
+    chunks = ('Try these:\n\n', '1. **When did it happen?**\n', '2. What did it cost?')
+    chat = FakeChat(chunks=chunks)
+    extract = FakeExtract([])
+    reader = FakeExtract([])
+
+    stream = list(studio.run_turn(state, history, message, chat_llm=chat, extract_llm=extract, read_llm=reader))
+
+    assert [event['type'] for event in stream] == ['support', 'delta', 'delta', 'delta', 'reply', 'done']
+    reply = stream[-2]
+    assert reply['acknowledgment'] == ''.join(event['text'] for event in stream if event['type'] == 'delta')
+    assert reply['ask'] == {} and not reply.get('run_team')
+    assert extract.calls == reader.calls == 0
+    assert 'cell tower' not in str(chat.messages) and 'Founders lose originality' in str(chat.messages)
+
+
+def test_interrupted_coaching_keeps_the_text_already_shown():
+    class InterruptedChat:
+        def chat_stream(self, messages, **kwargs):
+            yield 'Start with what you remember.'
+            raise RuntimeError('connection lost')
+
+    stream = list(studio.run_turn(new(), [], 'Give me a hint', chat_llm=InterruptedChat()))
+    assert stream[-2]['acknowledgment'] == stream[1]['text']
+    assert 'interrupted' in stream[-2]['notice']
+    assert stream[-1]['type'] == 'done'

@@ -28,13 +28,7 @@
         </div>
       </section>
 
-      <div v-if="m.streaming" class="body" aria-live="off">
-        <p v-for="(para, i) in streamParas" :key="i">
-          <template v-if="i === streamParas.length - 1">{{ para.slice(0, Math.max(0, para.length - tail)) }}<span class="fresh" :key="m.content.length">{{ para.slice(Math.max(0, para.length - tail)) }}</span></template>
-          <template v-else>{{ para }}</template>
-        </p>
-      </div>
-      <div v-else-if="parsed.body" class="body" v-html="parsed.bodyHtml"></div>
+      <div v-if="parsed.body" class="body" v-html="parsed.bodyHtml"></div>
 
       <ol v-if="m.coachingItems?.length" class="body">
         <li v-for="(item, index) in m.coachingItems" :key="index">{{ item }}</li>
@@ -54,8 +48,7 @@
         </li>
       </ul>
 
-      <QuestionCard v-if="m.streaming" pending />
-      <QuestionCard v-else-if="parsed.question" :question="parsed.question" :reason="m.ask?.reason || ''" :active="isLast && !busy"
+      <QuestionCard v-if="!m.streaming && parsed.question" :question="parsed.question" :reason="m.ask?.reason || ''" :active="isLast && !busy"
                     @answer="$emit('answer')" @quick="(t) => $emit('quick', t)" />
     </div>
   </article>
@@ -82,23 +75,13 @@ const ICON = {
 
 const teamWorking = computed(() => !!props.m.trace?.some(s => s.status === 'running' || s.status === 'queued'))
 const receipts = computed(() => (props.m.actions || []).filter(a => a.kind !== 'researched'))
-const tail = computed(() => props.m.tail || 0)
-
 const esc = (s) => s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
-
-// While streaming: show text up to where the bold question starts (the card takes the question)
-const streamParas = computed(() => {
-  let t = props.m.content || ''
-  const cut = t.indexOf('**')
-  if (cut !== -1) t = t.slice(0, cut)
-  return t.trim().split(/\n{2,}/).map(p => p.replace(/\n/g, ' ')).filter(Boolean)
-})
 
 // Finished: split into research facts (shown as a card), body, and the question
 const parsed = computed(() => {
   let text = (props.m.acknowledgment ?? props.m.content ?? '').trim()
   let question = props.m.ask?.question || ''
-  if (props.m.acknowledgment === undefined) {
+  if (!props.m.streaming && props.m.acknowledgment === undefined) {
     const legacy = text.match(/(?:^|\n)\*\*([^\n*]+\?)\*\*$/)
     if (legacy) {
       question = legacy[1]
@@ -127,8 +110,6 @@ const parsed = computed(() => {
 .body :deep(p:last-child), .body p:last-child { margin-bottom: 0; }
 .body :deep(strong) { color: #fff; font-weight: 600; }
 /* The newest words fade in as they stream */
-.fresh { animation: ink 420ms ease-out both; }
-@keyframes ink { from { opacity: 0; filter: blur(2px); } to { opacity: 1; filter: none; } }
 
 .notice { margin-top: 10px; font-size: 12px; color: #fcd34d; background: rgba(245, 158, 11, 0.07); border: 1px solid rgba(245, 158, 11, 0.22);
   border-radius: 8px; padding: 6px 10px; }
